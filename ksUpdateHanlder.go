@@ -30,7 +30,7 @@ import (
 )
 
 const (
-	KsIPUrl = "http://ks.measurementlab.net/mlab-host-ips.txt"
+	KsIPUrl            = "http://ks.measurementlab.net/mlab-host-ips.txt"
 	KsUpdateHandlerUrl = "/admin/KsUpdateHandler"
 )
 
@@ -51,53 +51,53 @@ func KsUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	txtBlob, _ := ioutil.ReadAll(res.Body)
-    defer res.Body.Close()
-    txt := fmt.Sprintf("%s", txtBlob)
-    lines := strings.Split(txt, "\n")
-    for _, line := range lines{
-        if len(line) == 0{
-            continue    
-        }
-        split := strings.Split(line, ",")
-        fqdn := split[0]
-        ipv4 := split[1]
-        ipv6 := split[2]
-        q := datastore.NewQuery("SliverTool").Filter("fqdn=", fqdn)
-        var sliverTool []*data.SliverTool
-        _, err = q.GetAll(c, &sliverTool)
-        if err != nil {
-           c.Errorf("KsUpdateHandler:q.GetAll(..sliverTool) err = %v", err) 
-           continue
-        }
-        if len(sliverTool) > 1{
-            c.Errorf("KsUpdateHandler:q.GetAll(..sliverTool): Two sliverTools with same fqdn = %s", fqdn)    
-            continue
-        }else if len(sliverTool) < 1{
-            c.Errorf("KsUpdateHandler:q.GetAll(..sliverTool): sliverTool not found with fqdn = %s", fqdn)    
-            continue
-        }
-        
-        sliverTool[0].SliverIPv4 = ipv4
-        if ipv4 == ""{
-            sliverTool[0].SliverIPv4 = "off"
-        }
-        sliverTool[0].SliverIPv6 = ipv6
-        if ipv6 == ""{
-            sliverTool[0].SliverIPv6 = "off"    
-        }
+	defer res.Body.Close()
+	txt := fmt.Sprintf("%s", txtBlob)
+	lines := strings.Split(txt, "\n")
+	for _, line := range lines {
+		if len(line) == 0 {
+			continue
+		}
+		split := strings.Split(line, ",")
+		fqdn := split[0]
+		ipv4 := split[1]
+		ipv6 := split[2]
+		q := datastore.NewQuery("SliverTool").Filter("fqdn=", fqdn)
+		var sliverTool []*data.SliverTool
+		_, err = q.GetAll(c, &sliverTool)
+		if err != nil {
+			c.Errorf("KsUpdateHandler:q.GetAll(..sliverTool) err = %v", err)
+			continue
+		}
+		if len(sliverTool) > 1 {
+			c.Errorf("KsUpdateHandler:q.GetAll(..sliverTool): Two sliverTools with same fqdn = %s", fqdn)
+			continue
+		} else if len(sliverTool) < 1 {
+			c.Errorf("KsUpdateHandler:q.GetAll(..sliverTool): sliverTool not found with fqdn = %s", fqdn)
+			continue
+		}
 
-        slID := data.GetSliverToolID(sliverTool[0].ToolID, sliverTool[0].SliceID, sliverTool[0].ServerID, sliverTool[0].SiteID)
-        sk := datastore.NewKey(c, "SliverTool", slID, 0, nil)
-        _, err := datastore.Put(c, sk, sliverTool[0])
-        if err != nil {
-            c.Errorf("KsUpdateHandler: datastore.Put err %v ", err) 
-        }else{
-            // TODO: add to data to update LocationMap and memcache
-        }
-    }
-    // TODO: Update locationMap
-    // geo.LMapIPv4.ChangeMulti(map[oldIP]newIP) 
-    // geo.LMapIPv6.ChangeMulti(map[oldIP]newIP)
-    // TODO: Update memcache
-    fmt.Fprintf(w, "OK")
+		sliverTool[0].SliverIPv4 = ipv4
+		if ipv4 == "" {
+			sliverTool[0].SliverIPv4 = "off"
+		}
+		sliverTool[0].SliverIPv6 = ipv6
+		if ipv6 == "" {
+			sliverTool[0].SliverIPv6 = "off"
+		}
+
+		slID := data.GetSliverToolID(sliverTool[0].ToolID, sliverTool[0].SliceID, sliverTool[0].ServerID, sliverTool[0].SiteID)
+		sk := datastore.NewKey(c, "SliverTool", slID, 0, nil)
+		_, err := datastore.Put(c, sk, sliverTool[0])
+		if err != nil {
+			c.Errorf("KsUpdateHandler: datastore.Put err %v ", err)
+		} else {
+			// TODO: add to data to update LocationMap and memcache
+		}
+	}
+	// TODO: Update locationMap
+	// geo.LMapIPv4.ChangeMulti(map[oldIP]newIP) 
+	// geo.LMapIPv6.ChangeMulti(map[oldIP]newIP)
+	// TODO: Update memcache
+	fmt.Fprintf(w, "OK")
 }
