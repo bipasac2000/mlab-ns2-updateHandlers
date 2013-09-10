@@ -44,7 +44,7 @@ func process (line string) (string, string){
     return state, sliverFQDN[0]
 }
 
-func getSliceStatus(t *digest.Transport, url string, w http.ResponseWriter) (map[string]string, error){ 
+func getSliceStatus(t *digest.Transport, url string) (map[string]string, error){ 
     
     req, err := http.NewRequest("GET", url, nil)
     if err != nil {
@@ -164,7 +164,7 @@ func NagiosUpdateHandler(w http.ResponseWriter, r *http.Request) {
     for _, slice := range slices { 
         for _, family := range familys {
             url := nagios.URL+ "?show_state=1&service_name=" + slice.ToolID + family
-            sliceStatus, err := getSliceStatus(t, url, w)
+            sliceStatus, err := getSliceStatus(t, url)
             if err != nil {
                 c.Errorf("NagiosUpdateHandler:getSliceStatus(%s) err = %v", slice.ToolID, err)
                 continue
