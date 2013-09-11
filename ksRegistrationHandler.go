@@ -17,6 +17,7 @@
 // The handlers package provides the mlab-ns2 handlers"
 package handlers
 
+/*
 import (
 	"appengine"
 	"appengine/datastore"
@@ -105,7 +106,7 @@ func registerSite(c appengine.Context, site *data.Site) ([]*datastore.Key, error
 
 	sliverTools := make([]*data.SliverTool, len(tools)*numServers)
 	slKeys := make([]*datastore.Key, len(tools)*numServers)
-    i := 0
+	i := 0
 	for _, tool := range tools {
 		for _, serverID := range serverIDs {
 			sliverToolID := data.GetSliverToolID(tool.ToolID, tool.SliceID, serverID, site.SiteID)
@@ -130,9 +131,9 @@ func registerSite(c appengine.Context, site *data.Site) ([]*datastore.Key, error
 				When:                   time.Now(),
 			}
 			slKey := datastore.NewKey(c, "SliverTool", sliverToolID, 0, nil)
-            slKeys[i] = slKey
-            sliverTools[i] = sliverTool
-            i++
+			slKeys[i] = slKey
+			sliverTools[i] = sliverTool
+			i++
 		}
 	}
 	return datastore.PutMulti(c, slKeys, sliverTools)
@@ -151,12 +152,12 @@ func KsRegistrationHandler(w http.ResponseWriter, r *http.Request) {
 
 	ksSiteIds := make(map[string]int)
 	validSites := make([]*data.Site, len(ksSites))
-    i := 0
+	i := 0
 	for _, site := range ksSites {
 		if validateSite(site) {
 			validSites[i] = site
 			ksSiteIds[site.SiteID] = 1
-            i++
+			i++
 		} else {
 			c.Errorf("KsRegistrationHandler:validateSite err = %v", ErrInvalidKsSite)
 		}
@@ -187,3 +188,4 @@ func KsRegistrationHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+*/
