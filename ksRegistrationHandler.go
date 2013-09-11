@@ -17,7 +17,6 @@
 // The handlers package provides the mlab-ns2 handlers"
 package handlers
 
-/*
 import (
 	"appengine"
 	"appengine/datastore"
@@ -188,4 +187,3 @@ func KsRegistrationHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
-*/
